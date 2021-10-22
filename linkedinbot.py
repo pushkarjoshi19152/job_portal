@@ -61,7 +61,8 @@ class LinkedInBot:
             'jobs-search-box__text-input')
         search_keywords = search_bars[0]
         search_keywords.send_keys(keywords)
-        search_location = search_bars[2]
+        search_location = self.driver.find_element_by_xpath(
+            '//*[@id="jobs-search-box-location-id-ember40"]')
         search_location.send_keys(location)
         time.sleep(self.delay)
         search_location.send_keys(Keys.RETURN)
@@ -138,7 +139,7 @@ class LinkedInBot:
                 [position, company, location,
                     details] = self.get_position_data(job)
 
-                # do something with the data...
+                
 
             # go to next page:
             bot.driver.find_element_by_xpath(
@@ -150,7 +151,7 @@ class LinkedInBot:
 
 
 if __name__ == "__main__":
-    email = "your email"
-    password = "your password"
+    email = 'pushkaredc@gmail.com'
+    password = "U2WkKH)hB2fDT2/"
     bot = LinkedInBot()
     bot.run(email, password, "Data Scientist", "Canada")
