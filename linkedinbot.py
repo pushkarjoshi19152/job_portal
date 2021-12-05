@@ -16,6 +16,9 @@ import os
 
 class LinkedInBot:
     def __init__(self, delay=5):
+        self.data = []
+        self.email = 'pushkaredc@gmail.com'
+        self.password = 'U2WkKH)hB2fDT2/'
         if not os.path.exists("data"):
             os.makedirs("data")
         log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -61,8 +64,9 @@ class LinkedInBot:
             'jobs-search-box__text-input')
         search_keywords = search_bars[0]
         search_keywords.send_keys(keywords)
+        time.sleep(self.delay)
         search_location = self.driver.find_element_by_xpath(
-            '//*[@id="jobs-search-box-location-id-ember40"]')
+            '//*[@id="jobs-search-box-location-id-ember41"]')
         search_location.send_keys(location)
         time.sleep(self.delay)
         search_location.send_keys(Keys.RETURN)
@@ -113,17 +117,17 @@ class LinkedInBot:
         logging.info("Closing session")
         self.driver.close()
 
-    def run(self, email, password, keywords, location):
-        if os.path.exists("data/cookies.txt"):
+    def run(self,  keywords, location):
+        if os.path.exists("data/linkedin_cookies.txt"):
             self.driver.get("https://www.linkedin.com/")
-            self.load_cookie("data/cookies.txt")
+            self.load_cookie("data/linkedin_cookies.txt")
             self.driver.get("https://www.linkedin.com/")
         else:
             self.login(
-                email=email,
-                password=password
+                email=self.email,
+                password=self.password
             )
-            self.save_cookie("data/cookies.txt")
+            self.save_cookie("data/linkedin_cookies.txt")
 
         logging.info("Begin linkedin keyword search")
         self.search_linkedin(keywords, location)
@@ -131,27 +135,34 @@ class LinkedInBot:
 
         # scrape pages,only do first 8 pages since after that the data isn't
         # well suited for me anyways:
-        for page in range(2, 8):
+        for page in range(2, 3):
             # get the jobs list items to scroll through:
             jobs = self.driver.find_elements_by_class_name("occludable-update")
             for job in jobs:
                 self.scroll_to(job)
                 [position, company, location,
                     details] = self.get_position_data(job)
+                self.data.append({
+                    'position': position,
+                    'company': company,
+                    'experience': 'NA',
+                    'link': "NA",
+                    'salary': "NA"
 
-                
+                })
 
             # go to next page:
-            bot.driver.find_element_by_xpath(
+            self.driver.find_element_by_xpath(
                 f"//button[@aria-label='Page {page}']").click()
-            bot.wait()
+            self.wait()
         logging.info("Done scraping.")
         logging.info("Closing DB connection.")
-        bot.close_session()
+        self.close_session()
+        return self.data
 
 
-if __name__ == "__main__":
-    email = 'pushkaredc@gmail.com'
-    password = "U2WkKH)hB2fDT2/"
-    bot = LinkedInBot()
-    bot.run(email, password, "Data Scientist", "Canada")
+# if __name__ == "__main__":
+#     email = 'pushkaredc@gmail.com'
+#     password = "U2WkKH)hB2fDT2/"
+#     bot = LinkedInBot()
+#     bot.run(email, password, "Data Scientist", "Canada")
