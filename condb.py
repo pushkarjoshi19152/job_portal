@@ -17,11 +17,10 @@ import getpass
 class connection:
     def __init__(self):
 
-        self.client = pymongo.MongoClient(
-            'mongodb+srv://pushkar19152:K9KZNqBgkY7ex5y@cluster0.bvs04.mongodb.net/test')
+        self.client = pymongo.MongoClient('mongodb://localhost:27017/')
         self.db = self.client['jobportal']
         self.collection = self.db['users']
-        self.collection.insert_one({'_id': 1, 'name': 'pushkar'})
+        # self.collection.insert_one({'_id': 1, 'name': 'pushkar'})
 
     def login(self):
         print('------------Login-----------\n')
