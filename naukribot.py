@@ -90,10 +90,10 @@ class NaukriBot:
         job_list_item.click()
         time.sleep(self.delay)
 
-    def get_position_data(self):
+    def get_position_data(self, n):
 
         self.driver.get(self.driver.current_url)
-        count = 100  # Update the Number of Vacancy count you want to scrape.
+        count = n  # Update the Number of Vacancy count you want to scrape.
 
         # This the the index variable of the elements from which data will be Scraped
         index, new_index, i = '0', 1, 0
@@ -188,7 +188,7 @@ class NaukriBot:
         logging.info("Closing session")
         self.driver.close()
 
-    def run(self,  keywords, location):
+    def run(self,  keywords, location, n):
         if os.path.exists("data/naukri_cookies.txt"):
             self.driver.get("https://www.naukri.com/")
             self.load_cookie("data/naukri_cookies.txt")
@@ -204,7 +204,7 @@ class NaukriBot:
         self.search_naukri(keywords, location)
         self.wait()
 
-        self.get_position_data()
+        self.get_position_data(n)
 
         logging.info("Done scraping.")
         logging.info("Closing DB connection.")

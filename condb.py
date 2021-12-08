@@ -57,17 +57,15 @@ class connection:
             print('\nUsername already exists!')
             return True
 
-    def scrape(self):
+    def scrape(self,role,loc,n):
 
-        role = input('Job role: ')
-        loc = input('Location: ')
         self.data_collection = self.db[self.username]
         print('Initializing Linkedin Bot ...\n')
         lbot = linkedinbot.LinkedInBot()
 
         print("Running Linkedin Bot....\n")
 
-        data = lbot.run(role, loc)
+        data = lbot.run(role, loc, n/2)
         self.data_collection.insert_many(data)
 
         print('Initializing Naukri Bot ...\n')
@@ -75,6 +73,6 @@ class connection:
 
         print("Running Naukri Bot....\n")
 
-        data = nbot.run(role, loc)
+        data = nbot.run(role, loc, n/2)
         self.data_collection.insert_many(data)
     

@@ -117,7 +117,7 @@ class LinkedInBot:
         logging.info("Closing session")
         self.driver.close()
 
-    def run(self,  keywords, location):
+    def run(self,  keywords, location, n):
         if os.path.exists("data/linkedin_cookies.txt"):
             self.driver.get("https://www.linkedin.com/")
             self.load_cookie("data/linkedin_cookies.txt")
@@ -135,21 +135,28 @@ class LinkedInBot:
 
         # scrape pages,only do first 8 pages since after that the data isn't
         # well suited for me anyways:
-        for page in range(2, 3):
-            # get the jobs list items to scroll through:
-            jobs = self.driver.find_elements_by_class_name("occludable-update")
-            for job in jobs:
-                self.scroll_to(job)
-                [position, company, location,
-                    details] = self.get_position_data(job)
-                self.data.append({
-                    'position': position,
-                    'company': company,
-                    'experience': 'NA',
-                    'link': "NA",
-                    'salary': "NA"
+        c = 0
+        for page in range(2, 8):
+            if c < n:
+                jobs = self.driver.find_elements_by_class_name("occludable-update")
+                for job in jobs:
+                    self.scroll_to(job)
+                    [position, company, location,
+                        details] = self.get_position_data(job)
+                    self.data.append({
+                        'position': position,
+                        'company': company,
+                        'experience': 'NA',
+                        'link': "NA",
+                        'salary': "NA"
 
-                })
+                    })
+                    if c<n:
+                        c += 1
+                    else:
+                        break
+            else:
+                break
 
             # go to next page:
             self.driver.find_element_by_xpath(
